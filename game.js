@@ -18,7 +18,7 @@ MainGame.prototype = {
 	preload: function(){
 		game.load.image("spacefield", "img/space.png");
 		game.load.image("Player", "img/spaceshipt.png");
-		game.load.image("Metorite", "img/metorite.png");
+		game.load.image("meteorite", "img/meteorite.png");
 		game.load.image("Bullets", "img/bullets.png");
 	},
 
@@ -40,16 +40,16 @@ MainGame.prototype = {
 		this.weapon.bulletAngleOffset = 90;
 		this.weapon.trackSprite(this.player,34,30,false);
 
-		// random Metorites
-		this.metoritesGroup = this.add.group();
-		this.metoritesGroup.enableBody = true;
-		this.metoritesGroup.physicsBodyType = Phaser.Physics.ARCADE;
-		//for loop to create 10 metorites
+		// random meteorites
+		this.meteoritesGroup = this.add.group();
+		this.meteoritesGroup.enableBody = true;
+		this.meteoritesGroup.physicsBodyType = Phaser.Physics.ARCADE;
+		//for loop to create 10 meteorites
 		for (var i = 0; i < 10; i++) { 
 			var rand = game.rnd.realInRange(0.2, 0.5);
-			var newMetorite = game.add.sprite(game.world.randomX, -200 -(i*110), "Metorite");
-			newMetorite.scale.setTo(rand,rand);
-			this.metoritesGroup.add(newMetorite);
+			var newmeteorite = game.add.sprite(game.world.randomX, -200 -(i*110), "meteorite");
+			newmeteorite.scale.setTo(rand,rand);
+			this.meteoritesGroup.add(newmeteorite);
 		}
 
 		// Key-Binding
@@ -71,39 +71,39 @@ MainGame.prototype = {
 		if(this.btnRIGHT.isDown && this.player.x < 790 - 69) this.player.x += 5;
 		if(this.btnFIRE.isDown) this.weapon.fire();
 
-		//repositioning the metorites which got out of bounds
-		for(var i = 0; i < this.metoritesGroup.children.length; i++){
-			if(this.metoritesGroup.children[i].y < 600){
-				this.metoritesGroup.children[i].y += 5;
+		//repositioning the meteorites which got out of bounds
+		for(var i = 0; i < this.meteoritesGroup.children.length; i++){
+			if(this.meteoritesGroup.children[i].y < 600){
+				this.meteoritesGroup.children[i].y += 5;
 			} else {
-				this.metoritesGroup.children[i].y = -400;
-				this.metoritesGroup.children[i].x = game.world.randomX;
+				this.meteoritesGroup.children[i].y = -400;
+				this.meteoritesGroup.children[i].x = game.world.randomX;
 			}
 		}
 
-		//checking and adding amout of metorites
-		if(this.metoritesGroup.children.length < 10){
-			var i = 10 - this.metoritesGroup.children.length;
+		//checking and adding amout of meteorites
+		if(this.meteoritesGroup.children.length < 10){
+			var i = 10 - this.meteoritesGroup.children.length;
 
 			for(i; i >= 0; i --){
 				var rand = game.rnd.realInRange(0.2, 0.5);
-				var newMetorite = game.add.sprite(game.world.randomX, -200-(rand*100), "Metorite");
-				newMetorite.scale.setTo(rand, rand);
-				this.metoritesGroup.add(newMetorite);
+				var newmeteorite = game.add.sprite(game.world.randomX, -200-(rand*100), "meteorite");
+				newmeteorite.scale.setTo(rand, rand);
+				this.meteoritesGroup.add(newmeteorite);
 			}
 		}
 		
 		//checking collision/overlap of bullets and metoirtes
-		game.physics.arcade.overlap(this.weapon.bullets, this.metoritesGroup, this.bulletHandler, null, this);
+		game.physics.arcade.overlap(this.weapon.bullets, this.meteoritesGroup, this.bulletHandler, null, this);
 		
 	},
 
-	bulletHandler: function(bullets, metoritesGroup){
-		metoritesGroup.destroy();
+	bulletHandler: function(bullets, meteoritesGroup){
+		meteoritesGroup.destroy();
 		bullets.kill();
 
-		console.log("Size of the group: " + this.metoritesGroup.children.length);
-		console.log("Number of dead Children: " + this.metoritesGroup.countDead());
+		console.log("Size of the group: " + this.meteoritesGroup.children.length);
+		console.log("Number of dead Children: " + this.meteoritesGroup.countDead());
 		
 	}
 }
