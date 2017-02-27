@@ -24,6 +24,7 @@ MainGame.prototype = {
 
 	create: function(){
 		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+		this.physics.startSystem(Phaser.Physics.ARCADE);
 		
 		console.log("Fertig mit Laden");
 
@@ -40,11 +41,15 @@ MainGame.prototype = {
 		this.weapon.trackSprite(this.player,34,30,false);
 
 		// random Metorites
-		this.metorites = Array(10);
-		for (var i = 0; i < this.metorites.length; i++) {
-			var rand = game.rnd.realInRange(0.3,0.6);
-			this.metorites[i] = game.add.sprite(game.world.randomX, -200 +(i*110), "Metorite");
-			this.metorites[i].scale.setTo(rand,rand);
+		this.metoritesGroup = this.add.group();
+		this.metoritesGroup.enableBody = true;
+		this.metoritesGroup.physicsBodyType = Phaser.Physics.ARCADE;
+		//for loop to create 10 metorites
+		for (var i = 0; i < 10; i++) { 
+			var rand = game.rnd.realInRange(0.2, 0.5);
+			var newMetorite = game.add.sprite(game.world.randomX, -200 -(i*110), "Metorite");
+			newMetorite.scale.setTo(rand,rand);
+			this.metoritesGroup.add(newMetorite);
 		}
 
 		// Key-Binding
@@ -56,21 +61,50 @@ MainGame.prototype = {
 	},
 
 	update: function(){
+		//making the background move 
 		this.spacefield.tilePosition.y += 2;
+
+		//player movement
 		if(this.btnUP.isDown && this.player.y > 10) this.player.y -= 5;
 		if(this.btnDOWN.isDown && this.player.y < 590 - 92) this.player.y += 5;
 		if(this.btnLEFT.isDown && this.player.x > 10) this.player.x -= 5;
 		if(this.btnRIGHT.isDown && this.player.x < 790 - 69) this.player.x += 5;
 		if(this.btnFIRE.isDown) this.weapon.fire();
 
-
-		for(var i = 0; i < this.metorites.length; i++){
-			if(this.metorites[i].y < 600){
-				this.metorites[i].y += 5;
+		//repositioning the metorites which got out of bounds
+		for(var i = 0; i < this.metoritesGroup.children.length; i++){
+			if(this.metoritesGroup.children[i].y < 600){
+				this.metoritesGroup.children[i].y += 5;
 			} else {
-				this.metorites[i].y = -400;
-				this.metorites[i].x = game.world.randomX;
+				this.metoritesGroup.children[i].y = -400;
+				this.metoritesGroup.children[i].x = game.world.randomX;
 			}
 		}
+
+		//checking and adding amout of metorites
+		if(this.metoritesGroup.children.length < 10){
+			var i = 10 - this.metoritesGroup.children.length;
+
+			for(i; i >= 0; i --){
+				var rand = game.rnd.realInRange(0.2, 0.5);
+				var newMetorite = game.add.sprite(game.world.randomX, -200-(rand*100), "Metorite");
+				newMetorite.scale.setTo(rand, rand);
+				this.metoritesGroup.add(newMetorite);
+			}
+		}
+		
+		//checking collision/overlap of bullets and metoirtes
+		game.physics.arcade.overlap(this.weapon.bullets, this.metoritesGroup, this.bulletHandler, null, this);
+		
+	},
+
+	bulletHandler: function(bullets, metoritesGroup){
+		metoritesGroup.destroy();
+		bullets.kill();
+
+		console.log("Size of the group: " + this.metoritesGroup.children.length);
+		console.log("Number of dead Children: " + this.metoritesGroup.countDead());
+		
 	}
 }
+
