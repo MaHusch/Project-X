@@ -34,9 +34,9 @@ MainGame.prototype = {
 		this.btnLEFT = game.input.keyboard.addKey(Phaser.Keyboard.A);
 
 		for (var i = 0; i < this.metorites.length; i++) {
-			//var rand = game.rnd.realInRange(-10,1);
-			this.metorites[i] = game.add.sprite(game.world.randomX, -200 +(i*100), "Metorite");
-			this.metorites[i].scale.setTo(0.3,0.3);
+			var rand = game.rnd.realInRange(0.3,0.6);
+			this.metorites[i] = game.add.sprite(game.world.randomX, -200 +(i*110), "Metorite");
+			this.metorites[i].scale.setTo(rand,rand);
 		}
 
 	},
