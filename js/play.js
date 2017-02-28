@@ -16,10 +16,7 @@ var playState = {
 		//setup for explosion
 		explosion = game.add.sprite(-100, -100, "Explosion");
 		explosion.scale.setTo(1.5,1.5);
-		explode = explosion.animations.add("explode");
-
-
-		
+		explode = explosion.animations.add("explode");		
 
 		//Weapon/Bullets with Phaser-Engine	
 		this.weapon = game.add.weapon(30, "Bullets");
@@ -42,6 +39,9 @@ var playState = {
 			this.meteoritesGroup.add(newmeteorite);
 		}
 
+		//text for remaining lives;
+		this.livesLabel = game.add.text(20,20, "Remaining Lives: " + lives, {font: "15px Arial", fill: "#ffffff"});
+
 		// Key-Binding
 		this.btnUP = game.input.keyboard.addKey(Phaser.Keyboard.W);			
 		this.btnDOWN = game.input.keyboard.addKey(Phaser.Keyboard.S);
@@ -54,6 +54,8 @@ var playState = {
 
 		//making the background move 
 		this.spacefield.tilePosition.y += 2;
+
+		this.livesLabel.setText("Remaining Lives: " + lives);
 
 		//player movement
 		if(this.btnUP.isDown && player.y > 10 && player.alive) player.y -= 5;
@@ -95,6 +97,14 @@ var playState = {
 		//checking if the animation is over and resetting the player
 		if(!player.alive){
 			if(explode.isFinished){
+
+				//checking if there are meteorites on the spawnpoint
+				for(var i = 0; i < this.meteoritesGroup.children.length; i++){
+					if(this.meteoritesGroup.children[i].x == 300 || this.meteoritesGroup.children[i].y  == 400){
+						this.meteoritesGroup.children[i].y = -200-(i*110);
+						this.meteoritesGroup.children[i].x = game.world.randomX;
+					}
+				}
 				player.reset(300,400);
 				lives--;
 				if(lives < 1){
@@ -123,9 +133,5 @@ var playState = {
 			player.kill();
 			explosion.animations.play("explode", 30, false);
 			
-	},
-
-	render: function(){
-		game.debug.text(lives, 30, 30);
-	}	
+	}
 }
