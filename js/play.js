@@ -1,38 +1,10 @@
-var game = null;
-var lives = 0;
-var player = null;
-var explosion = null;
-var explode = null;
 
-function init(){
-	game = new Phaser.Game(800,600,Phaser.CANVAS, '', null, false, false);
-
-	game.state.add("MainGame", MainGame);
-	game.state.start("MainGame");
-}
-
-var MainGame = function(){
-
-}
-
-MainGame.prototype = {
-
-	init: function(){},
-
-	preload: function(){
-		game.load.image("spacefield", "img/space.png");
-		game.load.image("Player", "img/spaceshipt.png");
-		game.load.image("meteorite", "img/meteorite.png");
-		game.load.image("Bullets", "img/bullets.png");
-		game.load.spritesheet("Explosion", "img/explosion.png", 65, 65, 25);
-	},
+var playState = {
 
 	create: function(){
-		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-		this.physics.startSystem(Phaser.Physics.ARCADE);
+
+		game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 		lives = 5;
-		
-		console.log("Done with loading!");
 
 		//setup of Spacefield
 		this.spacefield = game.add.tileSprite(0,0,800,600,"spacefield");
@@ -53,7 +25,7 @@ MainGame.prototype = {
 		this.weapon = game.add.weapon(30, "Bullets");
 		this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
 		this.weapon.bulletSpeed = 400;
-		this.weapon.fireRate =500;
+		this.weapon.fireRate =500; //the higher the slower	
 		this.weapon.bulletAngleOffset = 90;
 		this.weapon.trackSprite(player,34,30,false);
 
@@ -79,6 +51,7 @@ MainGame.prototype = {
 	},
 
 	update: function(){
+
 		//making the background move 
 		this.spacefield.tilePosition.y += 2;
 
@@ -124,6 +97,9 @@ MainGame.prototype = {
 			if(explode.isFinished){
 				player.reset(300,400);
 				lives--;
+				if(lives < 1){
+					game.state.start("lost");
+				}
 			}
 		}
 	},
@@ -152,7 +128,4 @@ MainGame.prototype = {
 	render: function(){
 		game.debug.text(lives, 30, 30);
 	}	
-		
-	
 }
-
