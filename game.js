@@ -53,7 +53,7 @@ MainGame.prototype = {
 		this.weapon = game.add.weapon(30, "Bullets");
 		this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
 		this.weapon.bulletSpeed = 400;
-		this.weapon.fireRate =500;
+		this.weapon.fireRate =500; //the higher the s
 		this.weapon.bulletAngleOffset = 90;
 		this.weapon.trackSprite(player,34,30,false);
 

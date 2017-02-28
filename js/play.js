@@ -13,10 +13,11 @@ var playState = {
 		player = game.add.sprite(300,400, "Player");	
 		game.physics.enable(player, Phaser.Physics.ARCADE);
 
-		//setup for explosion
-		explosion = game.add.sprite(-100, -100, "Explosion");
-		explosion.scale.setTo(1.5,1.5);
-		explode = explosion.animations.add("explode");		
+		//setup for playerExplosion
+		playerExplosion = game.add.sprite(-100, -100, "Explosion");
+		playerExplosion.scale.setTo(1.5,1.5);
+		explode = playerExplosion.animations.add("explode");
+		
 
 		//Weapon/Bullets with Phaser-Engine	
 		this.weapon = game.add.weapon(30, "Bullets");
@@ -115,8 +116,13 @@ var playState = {
 	},
 
 	bulletHandler: function(bullets, meteoritesGroup){
+		
+		explosionMeteorite = game.add.sprite(meteoritesGroup.x, meteoritesGroup.y, "Explosion");
+		explosionMeteorite.scale.setTo(1.5,1.5);
+		explode2 = explosionMeteorite.animations.add("explode2");
 		meteoritesGroup.destroy();
 		bullets.kill();
+		explosionMeteorite.animations.play("explode2", 30, false);
 
 		console.log("Size of the group: " + this.meteoritesGroup.children.length);
 		console.log("Number of dead Children: " + this.meteoritesGroup.countDead());
@@ -125,13 +131,13 @@ var playState = {
 
 	collisionHandler: function(playeri, meteoritesGroup){
 		
-			//setting the x and y position for the explosion animation
+			//setting the x and y position for the playerExplosion animation
 			//and killing the player.sprite
 			//playing the animation
-			explosion.x = playeri.x;
-			explosion.y = playeri.y;
+			playerExplosion.x = playeri.x;
+			playerExplosion.y = playeri.y;
 			player.kill();
-			explosion.animations.play("explode", 30, false);
+			playerExplosion.animations.play("explode", 60, false);
 			
 	}
 }
